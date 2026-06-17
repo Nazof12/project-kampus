@@ -1,0 +1,112 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+
+using namespace std;
+
+// Struktur data untuk menyimpan barang
+struct Barang {
+    string nama;
+    int jumlah;
+    double hargaSatuan;
+    double subTotal;
+};
+
+// Fungsi untuk menghitung total belanja
+double hitungTotal(Barang daftar[], int jumlahBarang) {
+    double total = 0;
+    for (int i = 0; i < jumlahBarang; i++) {
+        daftar[i].subTotal = daftar[i].jumlah * daftar[i].hargaSatuan;
+        total += daftar[i].subTotal;
+    }
+    return total;
+}
+
+// Fungsi untuk menampilkan rincian belanja
+void tampilkanRincian(Barang daftar[], int jumlahBarang, double total, double diskon, double pajak, double totalAkhir) {
+    cout << "\n=====================================" << endl;
+    cout << "            RINCIAN BELANJA          " << endl;
+    cout << "=====================================" << endl;
+    cout << left << setw(20) << "Nama Barang" 
+         << setw(8) << "Jumlah" 
+         << setw(12) << "Harga Satuan" 
+         << "Subtotal" << endl;
+    cout << "-------------------------------------" << endl;
+
+    for (int i = 0; i < jumlahBarang; i++) {
+        cout << left << setw(20) << daftar[i].nama
+             << setw(8) << daftar[i].jumlah
+             << "Rp " << setw(10) << fixed << setprecision(2) << daftar[i].hargaSatuan
+             << "Rp " << fixed << setprecision(2) << daftar[i].subTotal << endl;
+    }
+
+    cout << "-------------------------------------" << endl;
+    cout << setw(30) << "Total Sebelum Diskon :" << "Rp " << fixed << setprecision(2) << total << endl;
+    cout << setw(30) << "Diskon :" << "Rp " << fixed << setprecision(2) << diskon << endl;
+    cout << setw(30) << "Pajak 10% :" << "Rp " << fixed << setprecision(2) << pajak << endl;
+    cout << setw(30) << "TOTAL AKHIR :" << "Rp " << fixed << setprecision(2) << totalAkhir << endl;
+    cout << "=====================================" << endl;
+}
+
+// Fungsi proses pembayaran
+void prosesPembayaran(double totalAkhir) {
+    double bayar, kembalian;
+    cout << "\nMasukkan jumlah uang dibayar: Rp ";
+    cin >> bayar;
+
+    while (bayar < totalAkhir) {
+        cout << "Uang kurang! Masukkan lagi: Rp ";
+        cin >> bayar;
+    }
+
+    kembalian = bayar - totalAkhir;
+    cout << "Pembayaran berhasil." << endl;
+    cout << "Kembalian Anda: Rp " << fixed << setprecision(2) << kembalian << endl;
+    cout << "\nTerima kasih telah berbelanja!" << endl;
+}
+
+int main() {
+    const int MAKS_BARANG = 10;
+    Barang daftarBarang[MAKS_BARANG];
+    int jumlahInput;
+    double total, diskon = 0, pajak, totalAkhir;
+
+    cout << "===== FITUR CHECKOUT TOKO =====" << endl;
+    cout << "Masukkan jumlah jenis barang: ";
+    cin >> jumlahInput;
+
+    // Validasi jumlah barang
+    while (jumlahInput < 1 || jumlahInput > MAKS_BARANG) {
+        cout << "Jumlah barang tidak valid! Masukkan lagi (1-10): ";
+        cin >> jumlahInput;
+    }
+
+    // Input data barang
+    for (int i = 0; i < jumlahInput; i++) {
+        cout << "\nBarang ke-" << i + 1 << endl;
+        cout << "Nama: ";
+        cin.ignore();
+        getline(cin, daftarBarang[i].nama);
+        cout << "Jumlah: ";
+        cin >> daftarBarang[i].jumlah;
+        cout << "Harga Satuan (Rp): ";
+        cin >> daftarBarang[i].hargaSatuan;
+    }
+
+    // Hitung total dan biaya tambahan
+    total = hitungTotal(daftarBarang, jumlahInput);
+
+    // Berikan diskon jika total lebih dari Rp500.000
+    if (total >= 500000) {
+        diskon = total * 0.10; // Diskon 10%
+    }
+
+    pajak = (total - diskon) * 0.10; // Pajak 10%
+    totalAkhir = (total - diskon) + pajak;
+
+    // Tampilkan rincian dan proses pembayaran
+    tampilkanRincian(daftarBarang, jumlahInput, total, diskon, pajak, totalAkhir);
+    prosesPembayaran(totalAkhir);
+
+    return 0;
+}

@@ -18,19 +18,17 @@ struct Barang {
 // FITUR AUTENTIKASI (LOGIN & REGISTRASI)
 // ==========================================
 
-// Fungsi untuk mengecek apakah file akun ada dan memiliki data
 bool cekAkunTerdaftar() {
     ifstream file(FILE_AKUN);
-    if (!file) return false;
-
+    if (!file) return false; 
+    
     string u, p;
     if (file >> u >> p) {
-        return true;
+        return true; 
     }
     return false;
 }
 
-// Fungsi untuk registrasi pembuatan akun baru
 void registrasiAkun() {
     ofstream file(FILE_AKUN);
     string username, password;
@@ -50,7 +48,6 @@ void registrasiAkun() {
     system("cls");
 }
 
-// Fungsi proses validasi login dengan batasan 3x percobaan
 bool prosesLogin() {
     if (!cekAkunTerdaftar()) {
         cout << "Error: Belum ada akun yang terdaftar! Silakan registrasi terlebih dahulu.\n" << endl;
@@ -81,14 +78,12 @@ bool prosesLogin() {
             cin.ignore(); cin.get();
             system("cls");
             return true;
-        }
-        else {
+        } else {
             percobaan--;
             system("cls");
             if (percobaan > 0) {
                 cout << "Username atau Password salah! Sisa percobaan: " << percobaan << "\n" << endl;
-            }
-            else {
+            } else {
                 cout << "Akses Ditolak! Anda salah memasukkan password sebanyak 3 kali.\n" << endl;
                 cout << "Tekan Enter untuk kembali ke menu awal...";
                 cin.ignore(); cin.get();
@@ -115,17 +110,17 @@ void tampilkanRincian(Barang daftar[], int jumlahBarang, double total, double di
     cout << "\n==============================================" << endl;
     cout << "               RINCIAN BELANJA                " << endl;
     cout << "==============================================" << endl;
-    cout << left << setw(22) << "Nama Barang"
-        << setw(8) << "Jumlah"
-        << setw(15) << "Harga Satuan"
-        << "Subtotal" << endl;
+    cout << left << setw(22) << "Nama Barang" 
+         << setw(8) << "Jumlah" 
+         << setw(15) << "Harga Satuan" 
+         << "Subtotal" << endl;
     cout << "----------------------------------------------" << endl;
 
     for (int i = 0; i < jumlahBarang; i++) {
         cout << left << setw(22) << (daftar[i].nama.length() > 20 ? daftar[i].nama.substr(0, 17) + "..." : daftar[i].nama)
-            << setw(8) << daftar[i].jumlah
-            << "Rp " << setw(12) << fixed << setprecision(0) << daftar[i].hargaSatuan
-            << "Rp " << fixed << setprecision(0) << daftar[i].subTotal << endl;
+             << setw(8) << daftar[i].jumlah
+             << "Rp " << setw(12) << fixed << setprecision(0) << daftar[i].hargaSatuan
+             << "Rp " << fixed << setprecision(0) << daftar[i].subTotal << endl;
     }
 
     cout << "----------------------------------------------" << endl;
@@ -158,7 +153,7 @@ int main() {
     int menuAwal;
     bool loginSukses = false;
 
-    // LOOP MENU UTAMAA AUTENTIKASI (LOGIN/REGIS)
+    // LOOP MENU UTAMA AUTENTIKASI (LOGIN/REGIS)
     do {
         cout << "==================================================" << endl;
         cout << "            SELAMAT DATANG DI APP TOKO            " << endl;
@@ -171,22 +166,21 @@ int main() {
         system("cls");
 
         switch (menuAwal) {
-        case 1:
-            if (prosesLogin()) {
-                loginSukses = true; // Flag diaktifkan untuk tembus ke sistem utama
-            }
-            break;
-        case 2:
-            registrasiAkun();
-            break;
-        case 3:
-            cout << "Terima kasih! Sampai jumpa kembali." << endl;
-            return 0; // Langsung hentikan total program jika pilih keluar
-        default:
-            cout << "Pilihan tidak valid! Silakan masukkan angka 1-3.\n" << endl;
+            case 1:
+                if (prosesLogin()) {
+                    loginSukses = true; 
+                }
+                break;
+            case 2:
+                registrasiAkun();
+                break;
+            case 3:
+                cout << "Terima kasih! Sampai jumpa kembali." << endl;
+                return 0; 
+            default:
+                cout << "Pilihan tidak valid! Silakan masukkan angka 1-3.\n" << endl;
         }
 
-        // Jika berhasil login, break dari loop menu awal dan lanjut ke bawah
         if (loginSukses) {
             break;
         }
@@ -195,16 +189,20 @@ int main() {
 
 
     // ===========================================================
-    // SISTEM UTAMA MARKETPLACE (Hanya terbuka jika loginSukses)
+    // SISTEM UTAMA MARKETPLACE 
     // ===========================================================
 
     string produk[10] = {
-        "Botol Minum Stainless", "Lampu LED Strip RGB", "Wireless Earbuds",
-        "Rak Sepatu Susun 5", "Power Bank 20.000mAh", "Keyboard Mechanical",
-        "Blender Portable USB", "Tas Ransel Anti Air", "Kamera CCTV WiFi", "Meja Laptop Lipat"
+        "Botol Minum Stainless Steel 750ml", "Lampu LED Strip RGB 5 Meter", "Wireless Earbuds Bluetooth",
+        "Rak Sepatu Susun 5 Tingkat", "Power Bank 20.000mAh", "Keyboard Mechanical Gaming",
+        "Blender Portable USB", "Tas Ransel Anti Air", "Kamera CCTV WiFi Indoor", "Meja Laptop Lipat"
     };
-
     int harga[10] = { 89000, 65000, 249000, 135000, 279000, 499000, 159000, 219000, 325000, 179000 };
+    
+    // Inisialisasi Database Wishlist tingkat utama
+    string wishlist[10];
+    int jumlahWishlist = 0;
+    
     int pilihan;
 
     do {
@@ -212,7 +210,8 @@ int main() {
         cout << "                 MARKET PLACE ONLINE              " << endl;
         cout << "--------------------------------------------------" << endl;
         cout << "1. Lihat & Beli Produk" << endl;
-        cout << "2. Keluar / Logout" << endl;
+        cout << "2. Menu Wishlist Saya" << endl;
+        cout << "3. Keluar / Logout" << endl;
         cout << "==================================================" << endl;
         cout << "Pilihan Menu : "; cin >> pilihan;
         system("cls");
@@ -220,14 +219,14 @@ int main() {
         switch (pilihan) {
         case 1: {
             cout << "================== LIST PRODUK ===================" << endl;
-            cout << left << setw(5) << "No" << setw(25) << "Nama Produk" << setw(15) << "Harga" << endl;
+            cout << left << setw(5) << "No" << setw(35) << "Nama Produk" << setw(15) << "Harga" << endl;
             cout << "--------------------------------------------------" << endl;
 
             for (int i = 0; i < 10; i++) {
-                cout << left << setw(5) << i + 1 << setw(25) << produk[i] << "Rp " << harga[i] << endl;
+                cout << left << setw(5) << i + 1 << setw(35) << produk[i] << "Rp " << harga[i] << endl;
             }
             cout << "==================================================" << endl;
-
+            
             const int MAKS_BARANG = 10;
             Barang daftarBarang[MAKS_BARANG];
             int jumlahInput;
@@ -264,7 +263,7 @@ int main() {
 
             total = hitungTotal(daftarBarang, jumlahInput);
             if (total >= 500000) {
-                diskon = total * 0.10;
+                diskon = total * 0.10; 
             }
             pajak = (total - diskon) * 0.10;
             totalAkhir = (total - diskon) + pajak;
@@ -277,7 +276,7 @@ int main() {
             string kurir[3] = { "JNE", "J&T", "SiCepat" };
             int opsi, estimasi = 0;
 
-            cin.ignore();
+            cin.ignore(); 
             cout << "\n==============================================" << endl;
             cout << "           SISTEM PENGIRIMAN BARANG           " << endl;
             cout << "==============================================" << endl;
@@ -310,13 +309,70 @@ int main() {
             system("cls");
             break;
         }
-        case 2:
+
+        case 2: {
+            // SUB-MENU WISHLIST
+            int pilihanWishlist;
+            do {
+                cout << "==================================================" << endl;
+                cout << "                  MENU WISHLIST                   " << endl;
+                cout << "==================================================" << endl;
+                cout << "1. Tambah Produk ke Wishlist" << endl;
+                cout << "2. Lihat List Wishlist Saya" << endl;
+                cout << "3. Kembali ke Menu Utama" << endl;
+                cout << "==================================================" << endl;
+                cout << "Pilih Menu Wishlist: "; cin >> pilihanWishlist;
+                system("cls");
+
+                if (pilihanWishlist == 1) {
+                    int nomorProduk;
+                    cout << "================== LIST PRODUK ===================" << endl;
+                    for (int i = 0; i < 10; i++) {
+                        cout << i + 1 << ". " << produk[i] << endl;
+                    }
+                    cout << "==================================================" << endl;
+                    cout << "Pilih nomor produk untuk Wishlist: "; cin >> nomorProduk;
+
+                    if (nomorProduk >= 1 && nomorProduk <= 10) {
+                        if (jumlahWishlist < 10) {
+                            wishlist[jumlahWishlist] = produk[nomorProduk - 1];
+                            jumlahWishlist++;
+                            cout << "\nProduk [" << produk[nomorProduk - 1] << "] berhasil masuk wishlist!" << endl;
+                        } else {
+                            cout << "\nWishlist penuh jir! Maksimal cuma 10 barang." << endl;
+                        }
+                    } else {
+                        cout << "\nNomor produk tidak valid!" << endl;
+                    }
+                    cout << "\nTekan Enter untuk melanjutkan...";
+                    cin.ignore(); cin.get();
+                    system("cls");
+
+                } else if (pilihanWishlist == 2) {
+                    cout << "=================== WISHLIST SAYA ===================" << endl;
+                    if (jumlahWishlist == 0) {
+                        cout << "Wishlist kamu masih kosong melompong." << endl;
+                    } else {
+                        for (int i = 0; i < jumlahWishlist; i++) {
+                            cout << i + 1 << ". " << wishlist[i] << endl;
+                        }
+                    }
+                    cout << "=====================================================" << endl;
+                    cout << "\nTekan Enter untuk kembali...";
+                    cin.ignore(); cin.get();
+                    system("cls");
+                }
+            } while (pilihanWishlist != 3);
+            break;
+        }
+
+        case 3:
             cout << "Log Out Berhasil. Menutup Marketplace...\n" << endl;
             break;
         default:
             cout << "Pilihan Lu Gada Jir. Coba lagi.\n" << endl;
         }
-    } while (pilihan != 2);
+    } while (pilihan != 3);
 
     return 0;
 }

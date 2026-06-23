@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream> 
-#include <cctype> // Diperlukan untuk fungsi isspace
+#include <cctype>
 
 using namespace std;
 

@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream> 
+#include <cctype> // Diperlukan untuk fungsi isspace
 
 using namespace std;
 
@@ -17,6 +18,16 @@ struct Barang {
 // ==========================================
 // FITUR AUTENTIKASI (LOGIN & REGISTRASI)
 // ==========================================
+
+// Fungsi pembantu untuk memvalidasi input agar tidak kosong dan tanpa spasi
+bool validasiInput(string str) {
+    if (str.empty()) return false;
+    
+    for (char c : str) {
+        if (isspace(c)) return false;
+    }
+    return true;
+}
 
 bool cekAkunTerdaftar() {
     ifstream file(FILE_AKUN);
@@ -36,15 +47,35 @@ void registrasiAkun() {
     cout << "==================================================" << endl;
     cout << "               HALAMAN REGISTRASI                 " << endl;
     cout << "==================================================" << endl;
-    cout << "Buat Username (Tanpa Spasi) : "; cin >> username;
-    cout << "Buat Password (Tanpa Spasi) : "; cin >> password;
+    
+    cin.ignore(1000, '\n'); // Bersihkan buffer dari menu utama
+
+    // Validasi Username
+    while (true) {
+        cout << "Buat Username (Tanpa Spasi & Tidak Kosong) : ";
+        getline(cin, username);
+        if (validasiInput(username)) {
+            break;
+        }
+        cout << ">> Error: Username tidak boleh kosong atau mengandung spasi!\n" << endl;
+    }
+
+    // Validasi Password
+    while (true) {
+        cout << "Buat Password (Tanpa Spasi & Tidak Kosong) : ";
+        getline(cin, password);
+        if (validasiInput(password)) {
+            break;
+        }
+        cout << ">> Error: Password tidak boleh kosong atau mengandung spasi!\n" << endl;
+    }
 
     file << username << " " << password;
     file.close();
 
     cout << "\nRegistrasi Berhasil! Akun Anda disimpan secara permanen." << endl;
     cout << "Tekan Enter untuk kembali...";
-    cin.ignore(); cin.get();
+    cin.get(); 
     system("cls");
 }
 
@@ -52,7 +83,7 @@ bool prosesLogin() {
     if (!cekAkunTerdaftar()) {
         cout << "Error: Belum ada akun yang terdaftar! Silakan registrasi terlebih dahulu.\n" << endl;
         cout << "Tekan Enter untuk kembali...";
-        cin.ignore(); cin.get();
+        cin.ignore(1000, '\n'); cin.get();
         system("cls");
         return false;
     }
@@ -65,17 +96,20 @@ bool prosesLogin() {
     file.close();
 
     int percobaan = 3;
+    cin.ignore(1000, '\n'); // Bersihkan buffer sebelum masuk loop login
+
     while (percobaan > 0) {
         cout << "==================================================" << endl;
         cout << "               HALAMAN LOGIN USER                 " << endl;
         cout << "==================================================" << endl;
-        cout << "Masukkan Username : "; cin >> inputUser;
-        cout << "Masukkan Password : "; cin >> inputPass;
+        
+        cout << "Masukkan Username : "; getline(cin, inputUser);
+        cout << "Masukkan Password : "; getline(cin, inputPass);
 
         if (inputUser == usernameTerdaftar && inputPass == passwordTerdaftar) {
             cout << "\nLogin Sukses! Selamat datang, " << inputUser << ".\n" << endl;
             cout << "Tekan Enter untuk masuk ke Marketplace...";
-            cin.ignore(); cin.get();
+            cin.get();
             system("cls");
             return true;
         } else {
@@ -86,7 +120,7 @@ bool prosesLogin() {
             } else {
                 cout << "Akses Ditolak! Anda salah memasukkan password sebanyak 3 kali.\n" << endl;
                 cout << "Tekan Enter untuk kembali ke menu awal...";
-                cin.ignore(); cin.get();
+                cin.get();
                 system("cls");
             }
         }
@@ -179,6 +213,8 @@ int main() {
                 return 0; 
             default:
                 cout << "Pilihan tidak valid! Silakan masukkan angka 1-3.\n" << endl;
+                cin.clear(); // Mengatasi bug jika input menu berupa huruf
+                cin.ignore(1000, '\n');
         }
 
         if (loginSukses) {
@@ -276,7 +312,7 @@ int main() {
             string kurir[3] = { "JNE", "J&T", "SiCepat" };
             int opsi, estimasi = 0;
 
-            cin.ignore(); 
+            cin.ignore(1000, '\n'); 
             cout << "\n==============================================" << endl;
             cout << "           SISTEM PENGIRIMAN BARANG           " << endl;
             cout << "==============================================" << endl;
@@ -305,7 +341,7 @@ int main() {
             cout << "Estimasi Sampai : " << estimasi << " hari\n" << endl;
 
             cout << "Tekan Enter untuk kembali ke menu utama...";
-            cin.ignore(); cin.get();
+            cin.ignore(1000, '\n'); cin.get();
             system("cls");
             break;
         }
@@ -345,7 +381,7 @@ int main() {
                         cout << "\nNomor produk tidak valid!" << endl;
                     }
                     cout << "\nTekan Enter untuk melanjutkan...";
-                    cin.ignore(); cin.get();
+                    cin.ignore(1000, '\n'); cin.get();
                     system("cls");
 
                 } else if (pilihanWishlist == 2) {
@@ -359,7 +395,7 @@ int main() {
                     }
                     cout << "=====================================================" << endl;
                     cout << "\nTekan Enter untuk kembali...";
-                    cin.ignore(); cin.get();
+                    cin.ignore(1000, '\n'); cin.get();
                     system("cls");
                 }
             } while (pilihanWishlist != 3);
@@ -371,6 +407,8 @@ int main() {
             break;
         default:
             cout << "Pilihan Lu Gada Jir. Coba lagi.\n" << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
         }
     } while (pilihan != 3);
 
